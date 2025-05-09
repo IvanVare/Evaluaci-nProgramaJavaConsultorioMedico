@@ -26,7 +26,7 @@ public class ConsultorioMedicoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ConsultorioMedicoApplication.class, args);
 	}
-
+	/*
 	@Bean
 	CommandLineRunner initDoctors(IDoctorRepository doctorRepository) {
 		return args -> {
@@ -112,7 +112,7 @@ public class ConsultorioMedicoApplication {
 					.fecha(LocalDate.parse("2025-05-12"))
 					.horaInicio(LocalTime.parse("18:00"))
 					.horaFin(LocalTime.parse("19:00"))
-					.numeroConsultorio("A2")
+					.numeroConsultorio("A1")
 					.nombreDoctor("Gerardo")
 					.build();
 
@@ -120,7 +120,8 @@ public class ConsultorioMedicoApplication {
 			citaService.create(citaDTO2);
 			citaService.create(citaDTO3);
 		};
-	}
+
+	}*/
 }
 
 
