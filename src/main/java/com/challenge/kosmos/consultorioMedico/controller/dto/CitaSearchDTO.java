@@ -16,15 +16,9 @@ import java.time.LocalDate;
 @Data
 public class CitaSearchDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @NotNull
-    @NotBlank
     private String nombreDoctor;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @NotNull
-    @NotBlank
     private LocalDate fecha;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @NotNull
-    @NotBlank
     private String numeroConsultorio;
 }
