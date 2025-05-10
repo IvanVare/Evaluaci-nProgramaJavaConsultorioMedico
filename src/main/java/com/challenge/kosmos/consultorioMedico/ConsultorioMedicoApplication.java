@@ -26,11 +26,12 @@ public class ConsultorioMedicoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ConsultorioMedicoApplication.class, args);
 	}
-	/*
 	@Bean
-	CommandLineRunner initDoctors(IDoctorRepository doctorRepository) {
+	CommandLineRunner initData(IDoctorRepository doctorRepository,
+							   IConsultorioRepository consultorioRepository,
+							   ICitaService citaService) {
 		return args -> {
-			// Create Doctors
+			//  Crear doctores
 			DoctorEntity doctor1 = DoctorEntity.builder()
 					.nombre("Juan")
 					.apellidoPaterno("Perez")
@@ -56,13 +57,8 @@ public class ConsultorioMedicoApplication {
 					.build();
 
 			doctorRepository.saveAll(List.of(doctor1, doctor2, doctor3));
-		};
-	}
 
-	@Bean
-	CommandLineRunner initConsultorios(IConsultorioRepository consultorioRespository) {
-		return args -> {
-			// Create Consultorios
+			// Crear consultorios
 			ConsultorioEntity consultorio1 = ConsultorioEntity.builder()
 					.numeroConsultorio("A1")
 					.piso(1)
@@ -81,14 +77,9 @@ public class ConsultorioMedicoApplication {
 					.status(1)
 					.build();
 
-			consultorioRespository.saveAll(List.of(consultorio1, consultorio2, consultorio3));
-		};
-	}
+			consultorioRepository.saveAll(List.of(consultorio1, consultorio2, consultorio3));
 
-	@Bean
-	CommandLineRunner initCitas(ICitaService citaService) {
-		return args -> {
-			// Create Citas
+			//  Crear citas
 			CitaDTO citaDTO1 = CitaDTO.builder()
 					.nombrePaciente("John moral juarez")
 					.fecha(LocalDate.parse("2025-05-10"))
@@ -120,8 +111,7 @@ public class ConsultorioMedicoApplication {
 			citaService.create(citaDTO2);
 			citaService.create(citaDTO3);
 		};
-
-	}*/
+	}
 }
 
 
