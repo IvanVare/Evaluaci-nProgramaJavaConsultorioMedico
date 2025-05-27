@@ -15,6 +15,6 @@ public interface ICitaRepository extends JpaRepository<CitaEntity,Long> {
     List<CitaEntity> findByConsultorioEntityNumeroConsultorioAndHoraInicio(String NumeroConsultori, LocalTime horaInicio);
     List<CitaEntity> findByConsultorioEntityNumeroConsultorioAndFecha(String NumeroConsultori, LocalDate fecha);
     List<CitaEntity> findByDoctorEntityNombreAndHoraInicio(String nombre, LocalTime horaInicio);
-    CitaEntity findByNombrePaciente(String nombrePaciente);
+    List<CitaEntity> findByNombrePacienteOrderByIdDesc(String nombrePaciente);
     List<CitaEntity> findByDoctorEntityNombreAndFecha(String nombre,LocalDate fecha);
 }

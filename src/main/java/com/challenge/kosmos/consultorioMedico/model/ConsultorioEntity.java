@@ -3,6 +3,8 @@ package com.challenge.kosmos.consultorioMedico.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -18,4 +20,7 @@ public class ConsultorioEntity {
     private String numeroConsultorio;
     private int piso;
     private int status;
+
+    @OneToMany(mappedBy = "consultorioEntity", fetch = FetchType.LAZY)
+    private List<CitaEntity> citaEntityList;
 }

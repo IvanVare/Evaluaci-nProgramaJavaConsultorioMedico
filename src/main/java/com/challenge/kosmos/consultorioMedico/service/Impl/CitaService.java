@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -34,7 +35,8 @@ public class CitaService implements ICitaService {
     public CitaDTO create(CitaDTO citaDTO) {
         CitaDTO citaDTOValidate = validateRegistrationRules(citaDTO);
         DoctorEntity doctorEntity = doctorRepository.findByNombre(citaDTOValidate.getNombreDoctor()).orElseThrow(()-> new ServiceException(HttpStatus.NOT_FOUND,DOCTOR_NOTFOUND));
-        ConsultorioEntity consultorioEntity = consultorioRepository.findByNumeroConsultorio(citaDTOValidate.getNumeroConsultorio()).orElseThrow(()-> new ServiceException(HttpStatus.NOT_FOUND,CONSULTORIO_NOTFOUND));
+        ConsultorioEntity consultorioEntity = consultorioRepository
+                .findByNumeroConsultorio(citaDTOValidate.getNumeroConsultorio()).orElseThrow(()-> new ServiceException(HttpStatus.NOT_FOUND,CONSULTORIO_NOTFOUND));
         CitaEntity citaEntity = CitaEntity
                 .builder()
                 .nombrePaciente(citaDTOValidate.getNombrePaciente())
@@ -178,13 +180,34 @@ public class CitaService implements ICitaService {
                 .anyMatch(cita -> cita.getDoctorEntity()==doctorEntity && cita.getHoraInicio() == citaDTO.getHoraInicio())){
             throw new ServiceException(HttpStatus.CONFLICT,"Doctor y consultorio ocupados");
         }
+        /*No se puede agendar cita para un paciente con una hora de inicio antes de la hora de fin
+        */
+        if(citaDTO.getHoraInicio().isAfter(citaDTO.getHoraFin())){
+            throw new ServiceException(HttpStatus.CONFLICT,"La hora de fin debe ser después de la hora de inicio");
+        }
         /*No se puede agendar cita para un paciente a la una misma hora ni con menos de 2 horas
         de diferencia para el mismo día
         */
+        List<CitaEntity> citaEntityList = citaRepository
+                .findByNombrePacienteOrderByIdDesc(citaDTO.getNombrePaciente())
+                .stream()
+                .filter(citaEntity -> citaEntity.getStatus()!=0)
+                .toList();
+        if (!citaEntityList.isEmpty()){
+            CitaEntity currentCitaEntity = citaEntityList.get(0);
 
-        if (citaRepository.findByNombrePaciente(citaDTO.getNombrePaciente())!=null && citaRepository.findByNombrePaciente(citaDTO.getNombrePaciente())
-                .getHoraFin().plusHours(2).isBefore(citaDTO.getHoraInicio())){
-            throw new ServiceException(HttpStatus.CONFLICT,"No se pudo agendar cita para el paciente por tiempo de espera minimo de 2 horas");
+            if (currentCitaEntity.getFecha().equals(citaDTO.getFecha())){
+                LocalTime localTimeCurrentCitaHoraFin;
+
+                if (currentCitaEntity.getHoraFin().isAfter(LocalTime.of(22,0))){
+                    localTimeCurrentCitaHoraFin = LocalTime.of(23,59);
+                }else {
+                    localTimeCurrentCitaHoraFin= currentCitaEntity.getHoraFin().plusHours(2);
+                }
+                if (citaDTO.getHoraInicio().isBefore(localTimeCurrentCitaHoraFin)){
+                    throw new ServiceException(HttpStatus.CONFLICT,"No se pudo agendar cita, tiempo de espera minimo de 2 horas");
+                }
+            }
         }
         //Un mismo doctor no puede tener más de 8 citas en el día
         if (citaRepository.findByDoctorEntityNombreAndFecha(citaDTO.getNombreDoctor(),citaDTO.getFecha())

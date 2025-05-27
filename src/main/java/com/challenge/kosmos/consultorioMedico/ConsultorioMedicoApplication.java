@@ -1,6 +1,8 @@
 package com.challenge.kosmos.consultorioMedico;
 
 import com.challenge.kosmos.consultorioMedico.controller.dto.CitaDTO;
+import com.challenge.kosmos.consultorioMedico.controller.dto.ConsultorioDTO;
+import com.challenge.kosmos.consultorioMedico.controller.dto.DoctorDTO;
 import com.challenge.kosmos.consultorioMedico.model.CitaEntity;
 import com.challenge.kosmos.consultorioMedico.model.ConsultorioEntity;
 import com.challenge.kosmos.consultorioMedico.model.DoctorEntity;
@@ -8,6 +10,8 @@ import com.challenge.kosmos.consultorioMedico.repository.ICitaRepository;
 import com.challenge.kosmos.consultorioMedico.repository.IConsultorioRepository;
 import com.challenge.kosmos.consultorioMedico.repository.IDoctorRepository;
 import com.challenge.kosmos.consultorioMedico.service.ICitaService;
+import com.challenge.kosmos.consultorioMedico.service.IConsultorioService;
+import com.challenge.kosmos.consultorioMedico.service.IDoctorService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,59 +30,56 @@ public class ConsultorioMedicoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ConsultorioMedicoApplication.class, args);
 	}
-
 	@Bean
-	CommandLineRunner initData(IDoctorRepository doctorRepository,
-							   IConsultorioRepository consultorioRepository,
+	CommandLineRunner initData(IDoctorService doctorService,
+							   IConsultorioService consultorioService,
 							   ICitaService citaService) {
 		return args -> {
 			//  Crear doctores
-			DoctorEntity doctor1 = DoctorEntity.builder()
+			DoctorDTO doctor1 = DoctorDTO.builder()
 					.nombre("Juan")
 					.apellidoPaterno("Perez")
 					.apellidoMaterno("Hernandez")
 					.especialidad("Clinico")
-					.status(1)
 					.build();
 
-			DoctorEntity doctor2 = DoctorEntity.builder()
+			DoctorDTO doctor2 = DoctorDTO.builder()
 					.nombre("Fernanda")
 					.apellidoPaterno("Armas")
 					.apellidoMaterno("Lopez")
 					.especialidad("Pediatría")
-					.status(1)
 					.build();
 
-			DoctorEntity doctor3 = DoctorEntity.builder()
+			DoctorDTO doctor3 = DoctorDTO.builder()
 					.nombre("Gerardo")
 					.apellidoPaterno("Moral")
 					.apellidoMaterno("Cordova")
 					.especialidad("Cardiólogo")
-					.status(1)
 					.build();
 
-			doctorRepository.saveAll(List.of(doctor1, doctor2, doctor3));
+			doctorService.create(doctor1);
+			doctorService.create(doctor2);
+			doctorService.create(doctor3);
 
 			// Crear consultorios
-			ConsultorioEntity consultorio1 = ConsultorioEntity.builder()
+			ConsultorioDTO consultorio1 = ConsultorioDTO.builder()
 					.numeroConsultorio("A1")
 					.piso(1)
-					.status(1)
 					.build();
 
-			ConsultorioEntity consultorio2 = ConsultorioEntity.builder()
+			ConsultorioDTO consultorio2 = ConsultorioDTO.builder()
 					.numeroConsultorio("A2")
 					.piso(1)
-					.status(1)
 					.build();
 
-			ConsultorioEntity consultorio3 = ConsultorioEntity.builder()
+			ConsultorioDTO consultorio3 = ConsultorioDTO.builder()
 					.numeroConsultorio("A3")
 					.piso(1)
-					.status(1)
 					.build();
 
-			consultorioRepository.saveAll(List.of(consultorio1, consultorio2, consultorio3));
+			consultorioService.create(consultorio1);
+			consultorioService.create(consultorio2);
+			consultorioService.create(consultorio3);
 
 			//  Crear citas
 			CitaDTO citaDTO1 = CitaDTO.builder()
@@ -113,7 +114,6 @@ public class ConsultorioMedicoApplication {
 			citaService.create(citaDTO3);
 		};
 	}
-
 }
 
 
